@@ -150,6 +150,7 @@ from https://pololu.github.io/pushbutton-arduino.
 
 ## Version history
 
+* 		(2020-01-05) : added optional parameter for debounce value, set default to 50mS
 * 2.0.0 (2016-08-22): Updated library to work with the Arduino Library Manager.
 * 1.1.1 (2016-06-03):
     * Fixed some small errors in the documentation.
