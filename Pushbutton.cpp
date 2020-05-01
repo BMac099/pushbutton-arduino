@@ -21,7 +21,7 @@ PushbuttonStateMachine::PushbuttonStateMachine()
 //
 // The prevTimeMillis variable holds the last time that we
 // transitioned to states 1 or 3.
-bool PushbuttonStateMachine::getSingleDebouncedRisingEdge(bool value)
+bool PushbuttonStateMachine::getSingleDebouncedRisingEdge(bool value, uint16_t Debounce)
 {
   uint16_t timeMillis = millis();
 
@@ -43,7 +43,7 @@ bool PushbuttonStateMachine::getSingleDebouncedRisingEdge(bool value)
       // state.
       state = 0;
     }
-    else if ((uint16_t)(timeMillis - prevTimeMillis) >= 15)
+    else if ((uint16_t)(timeMillis - prevTimeMillis) >= Debounce)		// BMac 4/29/2020 original value 15mS, debounce delay
     {
       // It has been at least 15 ms and the value is still false, so
       // proceed to the next state.
@@ -66,7 +66,7 @@ bool PushbuttonStateMachine::getSingleDebouncedRisingEdge(bool value)
       // The value is false or bouncing, so go back to previous state.
       state = 2;
     }
-    else if ((uint16_t)(timeMillis - prevTimeMillis) >= 15)
+    else if ((uint16_t)(timeMillis - prevTimeMillis) >= Debounce)		// BMac 4/29/2020 original value 15mS , debounce delay
     {
       // It has been at least 15 ms and the value is still true, so
       // go back to the initial state and report this rising edge.
@@ -109,21 +109,24 @@ void PushbuttonBase::waitForButton()
 
 bool PushbuttonBase::getSingleDebouncedPress()
 {
-  return pressState.getSingleDebouncedRisingEdge(isPressed());
+  return pressState.getSingleDebouncedRisingEdge(isPressed(),_debounce);
 }
 
 bool PushbuttonBase::getSingleDebouncedRelease()
 {
-  return releaseState.getSingleDebouncedRisingEdge(!isPressed());
+  return releaseState.getSingleDebouncedRisingEdge(!isPressed(),_debounce);
 }
 
-Pushbutton::Pushbutton(uint8_t pin, uint8_t pullUp, uint8_t defaultState)
+Pushbutton::Pushbutton(uint8_t pin, uint16_t debounce, uint8_t pullUp, uint8_t defaultState) //BMac added debounce
 {
   initialized = false;
   _pin = pin;
+  _debounce = debounce;				//BMac added debounce
   _pullUp = pullUp;
   _defaultState = defaultState;
+
 }
+
 
 void Pushbutton::init2()
 {

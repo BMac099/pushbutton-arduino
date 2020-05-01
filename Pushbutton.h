@@ -27,6 +27,9 @@
  *  I/O line reads high. */
 #define DEFAULT_STATE_HIGH  1
 
+/*! Indicates that the default debounce time of the button in milliseconds/*/
+#define DEFAULT_DEBOUNCE_TIME_MS  50
+
 /*! The pin used for the button on the
  * [Zumo Shield for Arduino](http://www.pololu.com/product/2508).
  *
@@ -48,12 +51,14 @@ public:
 
   /** This should be called repeatedly in a loop.  It will return true once after
    * each time it detects the given value changing from false to true. */
-  bool getSingleDebouncedRisingEdge(bool value);
+  bool getSingleDebouncedRisingEdge(bool value, uint16_t Debounce);
+
 
 private:
 
   uint8_t state;
   uint16_t prevTimeMillis;
+
 };
 // \endcond
 
@@ -120,6 +125,7 @@ public:
    * This function must be implemented in a subclass of PushbuttonBase, such as
    * Pushbutton. */
   virtual bool isPressed() = 0;
+  uint16_t _debounce	; //BMac
 
 private:
 
@@ -150,12 +156,20 @@ public:
    * @param defaultState Specifies the voltage level that corresponds to the
    * button's default (released) state.  This should be either
    * #DEFAULT_STATE_HIGH (which is the default if this argument is omitted) or
-   * #DEFAULT_STATE_LOW. */
-  Pushbutton(uint8_t pin, uint8_t pullUp = PULL_UP_ENABLED,
-      uint8_t defaultState = DEFAULT_STATE_HIGH);
-
+   * #DEFAULT_STATE_LOW. 
+    * @param debounce Specifies the debonce delay in milliSeconds		BMac
+   
+   */
+  Pushbutton(uint8_t pin,
+			uint16_t debounce = DEFAULT_DEBOUNCE_TIME_MS,
+			uint8_t pullUp = PULL_UP_ENABLED,
+			uint8_t defaultState = DEFAULT_STATE_HIGH);
+			
+			
   virtual bool isPressed();
+	
 
+	
 private:
 
   void init()
